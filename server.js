@@ -1,5 +1,6 @@
 var express = require("express");
 var cors = require("cors");
+var path = require("path");
 
 var app = express();
 
@@ -23,6 +24,15 @@ var lessons = [
 app.use(function(request, response, next) {
     console.log(new Date().toISOString() + " " + request.method + " " + request.url);
     next();
+});
+
+// STATIC FILE middleware: /images/maths.svg returns the file from the images folder
+var imagePath = path.resolve(__dirname, "images");
+app.use("/images", express.static(imagePath));
+
+// if express.static did not find the image, it calls next() and we end up here
+app.use("/images", function(request, response) {
+    response.status(404).send("Image not found: " + request.url);
 });
 
 // GET /lessons: returns all lessons as JSON
