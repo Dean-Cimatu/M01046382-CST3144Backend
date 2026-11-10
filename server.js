@@ -19,10 +19,20 @@ var lessons = [
     { id: 1010, subject: "Chess",            location: "Kilburn",       price: 65,  availability: 5, image: "images/chess.svg",     alt: "Chess" }
 ];
 
-// respond to any request with the lessons as JSON
-app.use(function(request, response) {
-    console.log("In comes a request to: " + request.url);
+// LOGGER middleware: prints every incoming request (time, method, url) to the console
+app.use(function(request, response, next) {
+    console.log(new Date().toISOString() + " " + request.method + " " + request.url);
+    next();
+});
+
+// GET /lessons: returns all lessons as JSON
+app.get("/lessons", function(request, response) {
     response.json(lessons);
+});
+
+// any other request: 404
+app.use(function(request, response) {
+    response.status(404).send("Page not found");
 });
 
 app.listen(3000, function() {
