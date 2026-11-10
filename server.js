@@ -7,6 +7,9 @@ var app = express();
 // allow requests from the front-end (different origin)
 app.use(cors());
 
+// read JSON sent in request bodies (e.g. new orders) into request.body
+app.use(express.json());
+
 var lessons = [
     { id: 1001, subject: "Maths",            location: "Hendon",        price: 100, availability: 5, image: "images/maths.svg",     alt: "Maths" },
     { id: 1002, subject: "English",          location: "Colindale",     price: 80,  availability: 5, image: "images/english.svg",   alt: "English" },
@@ -38,6 +41,14 @@ app.use("/images", function(request, response) {
 // GET /lessons: returns all lessons as JSON
 app.get("/lessons", function(request, response) {
     response.json(lessons);
+});
+
+// POST /orders: receives a new order from the front-end and logs it
+app.post("/orders", function(request, response) {
+    var order = request.body;
+    console.log("New order from " + order.name + " (" + order.phone + "):");
+    console.log(order.lessons);
+    response.json({ message: "Order received" });
 });
 
 // any other request: 404
